@@ -3,50 +3,46 @@ import Todo from "./Todo"
 import { connect } from 'react-redux'
 import { addtodo, removetodo } from './actionCreator'
 import { bindActionCreators } from 'redux'
+import { Route } from 'react-router-dom'
+import NewTodoForm from './newTodoForm'
 class TodoList extends Component {
     constructor(props) {
         super(props)
-        this.state = {
-            todos: ["a", "b", "c"],
-            task: ""
-        }
-        this.handleSubmit = this.handleSubmit.bind(this)
-        this.handleChange = this.handleChange.bind(this)
+
+        this.handleAdd = this.handleAdd.bind(this)
         this.removeTodo = this.removeTodo.bind(this)
     }
 
-
-    handleSubmit(e) {
-        e.preventDefault()
-        this.props.addtodo(this.state.task)
-        e.target.reset()
+    handleAdd(val) {
+        this.props.addtodo(val)
     }
-    handleChange(e) {
-        this.setState({ [e.target.name]: e.target.value })
-
-    }
-
     removeTodo(id) {
 
         this.props.removetodo(id)
     }
+
     render() {
-        
+
         let list = this.props.todos.map((t, i) => (
             <Todo removeTodo={this.removeTodo.bind(this, t.id)} task={t.task} key={i}></Todo>
         ))
         return (
             <div>
-                <h1>todo list!</h1>
-                <form onSubmit={this.handleSubmit}>
-                    <label >Task</label>
-                    <input type='text' name='task' id='task' onChange={this.handleChange}></input>
-                    <button>add task</button>
-                </form>
-
-                <ul>
-                    {list}
-                </ul>
+                <Route 
+                path='/todos/new'
+                 component={(props) =>
+                    <div>
+                        <NewTodoForm {...props} handleSubmit={this.handleAdd}></NewTodoForm>
+                    </div>
+                    
+                }></Route>
+                <Route 
+                exact path='/todos' 
+                component={() =>
+                    <div>
+                        <h1>todo list!</h1>
+                        <ul>{list}</ul>
+                    </div>}></Route>
             </div>
         )
     }
@@ -62,9 +58,9 @@ function mapDispatchtoProps(dispatch) {
     return {
         dispatch,
         ...bindActionCreators({ addtodo, removetodo }, dispatch)
-      }
+    }
 
 }//equals to {addtodo,removetodo} in the same place
 
 
-export default connect(mapStatestoProps,mapDispatchtoProps)(TodoList)
+export default connect(mapStatestoProps, mapDispatchtoProps)(TodoList)
