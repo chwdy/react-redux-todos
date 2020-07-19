@@ -1,26 +1,26 @@
-import {ADDTODO,REMOVETODO} from "./actionCreator"
+import {ADDTODO,REMOVETODO,GETTODOS} from "./actionCreator"
 
 
 
 const initstate ={
-    todos:[],
-    id:0
+    todos:[]
 }
 
 
 export default function rootReducer(state =initstate,action){
     switch(action.type){
+        case GETTODOS:
+            return {...state,todos:action.data}
         case ADDTODO:
-            var newstate = {...state}
-            newstate.id++
-            debugger
+            console.log(action);
             return {
-                ...newstate,
-                todos:[...newstate.todos,{task:action.task,id:newstate.id}]
+                ...state,
+            
+                todos:[...state.todos,action.task]
             }
         case REMOVETODO:
-            console.log(action.id);
-            let todos = state.todos.filter(t=>(t.id !== +action.id))
+ //id in todo-api is string
+            let todos = state.todos.filter(t=>(t._id !== action.id))
             return {
                 ...state,
                 todos:todos

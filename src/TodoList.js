@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Todo from "./Todo"
 import { connect } from 'react-redux'
-import { addtodo, removetodo } from './actionCreator'
+import { addtodo, removetodo,getTodos } from './actionCreator'
 import { bindActionCreators } from 'redux'
 import { Route } from 'react-router-dom'
 import NewTodoForm from './newTodoForm'
@@ -20,12 +20,16 @@ class TodoList extends Component {
 
         this.props.removetodo(id)
     }
+    componentDidMount(){
+        this.props.getTodos()
+    }
 
     render() {
-
-        let list = this.props.todos.map((t, i) => (
-            <Todo removeTodo={this.removeTodo.bind(this, t.id)} task={t.task} key={i}></Todo>
-        ))
+        console.log(this.props.todos);
+        let list = this.props.todos.map(t => {
+            console.log(t._id);
+            return <Todo removeTodo={this.removeTodo.bind(this, t._id)} task={t.name} key={t._id}></Todo>
+        })
         return (
             <div>
                 <Route 
@@ -57,7 +61,7 @@ function mapStatestoProps(reduxState) {
 function mapDispatchtoProps(dispatch) {
     return {
         dispatch,
-        ...bindActionCreators({ addtodo, removetodo }, dispatch)
+        ...bindActionCreators({ addtodo, removetodo,getTodos }, dispatch)
     }
 
 }//equals to {addtodo,removetodo} in the same place
